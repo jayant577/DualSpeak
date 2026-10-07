@@ -1,668 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Translate Style Speaker — English (India)</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Roboto', 'Noto Sans Devanagari', Arial, sans-serif;
-      background: #f5f5f5;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      color: #202124;
-    }
-
-    .gt-container {
-      width: 100%;
-      max-width: 720px;
-      background: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
-      overflow: hidden;
-      border: 1px solid #dadce0;
-    }
-
-    /* Top language bar */
-    .gt-topbar {
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid #dadce0;
-      background: #ffffff;
-    }
-
-    .gt-lang {
-      flex: 1;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      position: relative;
-      user-select: none;
-    }
-
-    .gt-lang-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .gt-lang-label {
-      font-size: 12px;
-      color: #5f6368;
-      font-weight: 400;
-    }
-
-    .gt-lang-name {
-      font-size: 14px;
-      color: #202124;
-      font-weight: 500;
-    }
-
-    .gt-arrow { color: #5f6368; font-size: 10px; }
-
-    .gt-swap {
-      width: 48px; height: 48px;
-      display: flex; align-items: center; justify-content: center;
-      color: #5f6368; font-size: 20px;
-      background: transparent; border: none; cursor: pointer;
-      transition: background 0.15s; flex-shrink: 0;
-    }
-    .gt-swap:hover { background: #f1f3f4; border-radius: 50%; }
-
-    .gt-dropdown {
-      position: absolute; top: 100%; left: 0; right: 0;
-      background: #ffffff; border: 1px solid #dadce0;
-      border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 100; max-height: 280px; overflow-y: auto; display: none;
-    }
-    .gt-dropdown.show { display: block; }
-
-    .gt-dropdown-item {
-      padding: 12px 16px; font-size: 14px; color: #202124;
-      cursor: pointer; display: flex; align-items: center; gap: 10px;
-      transition: background 0.1s;
-    }
-    .gt-dropdown-item:hover { background: #f1f3f4; }
-    .gt-dropdown-item.selected { background: #e8f0fe; color: #1967d2; }
-    .gt-dropdown-item small {
-      color: #5f6368; font-size: 11px; margin-left: auto;
-    }
-
-    /* Text area */
-    .gt-textarea-wrap { position: relative; padding: 8px 0; }
-
-    .gt-textarea {
-      width: 100%; border: none; outline: none;
-      font-family: 'Roboto', 'Noto Sans Devanagari', Arial, sans-serif;
-      font-size: 20px; line-height: 1.5;
-      padding: 16px 60px 16px 16px; resize: none;
-      color: #202124; background: transparent; min-height: 160px;
-    }
-    .gt-textarea::placeholder { color: #9aa0a6; }
-
-    .gt-clear-icon {
-      position: absolute; top: 20px; right: 18px;
-      width: 24px; height: 24px; border-radius: 50%;
-      background: #5f6368; color: #fff; border: none;
-      cursor: pointer; display: none; align-items: center;
-      justify-content: center; font-size: 14px; line-height: 1;
-      transition: background 0.15s;
-    }
-    .gt-clear-icon:hover { background: #202124; }
-    .gt-clear-icon.visible { display: flex; }
-
-    /* Bottom bar */
-    .gt-bottombar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 16px; border-top: 1px solid #dadce0;
-      background: #fff; flex-wrap: wrap; gap: 10px;
-    }
-
-    .gt-speaker-area { display: flex; align-items: center; gap: 8px; }
-
-    .gt-speaker-btn {
-      width: 44px; height: 44px; border-radius: 50%;
-      border: none; background: transparent; color: #1a73e8;
-      cursor: pointer; display: flex; align-items: center;
-      justify-content: center; transition: background 0.15s; position: relative;
-    }
-    .gt-speaker-btn:hover { background: #e8f0fe; }
-    .gt-speaker-btn:active { background: #d2e3fc; }
-    .gt-speaker-btn.speaking { background: #e8f0fe; }
-    .gt-speaker-btn.speaking svg { animation: speakerPulse 1.2s infinite; }
-
-    @keyframes speakerPulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(0.92); }
-    }
-
-    .gt-speaker-btn svg { width: 26px; height: 26px; fill: currentColor; }
-
-    .gt-stop-btn {
-      width: 44px; height: 44px; border-radius: 50%;
-      border: none; background: #1a73e8; color: #fff;
-      cursor: pointer; display: none; align-items: center;
-      justify-content: center; transition: background 0.15s;
-    }
-    .gt-stop-btn:hover { background: #1557b0; }
-    .gt-stop-btn.visible { display: flex; }
-    .gt-stop-btn svg { width: 18px; height: 18px; fill: currentColor; }
-
-    /* Speed chips */
-    .gt-speeds { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-
-    .gt-speed-chip {
-      padding: 6px 12px; border-radius: 16px;
-      border: 1px solid #dadce0; background: #fff; color: #3c4043;
-      font-size: 12px; font-weight: 500; cursor: pointer;
-      transition: all 0.15s; display: flex; align-items: center;
-      gap: 4px; font-family: inherit;
-    }
-    .gt-speed-chip:hover { background: #f1f3f4; border-color: #c6c6c6; }
-    .gt-speed-chip.active {
-      background: #e8f0fe; border-color: #1a73e8; color: #1967d2;
-    }
-    .gt-speed-chip:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* Status bar */
-    .gt-status {
-      padding: 8px 16px; font-size: 12px; color: #5f6368;
-      background: #f8f9fa; border-top: 1px solid #dadce0;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 8px;
-    }
-
-    .gt-status-left { display: flex; align-items: center; gap: 8px; }
-
-    .gt-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: #9aa0a6; transition: all 0.25s;
-    }
-    .gt-dot.active {
-      background: #1a73e8; box-shadow: 0 0 8px #1a73e8;
-      animation: pulse 1.4s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
-
-    /* Voice badge */
-    .voice-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: #e6f4ea; color: #137333;
-      font-size: 11px; font-weight: 600;
-      padding: 2px 9px; border-radius: 20px;
-      border: 1px solid #c6e7d0;
-    }
-    .voice-badge .flag { font-size: 12px; }
-    .voice-badge.warn { background: #fef7e0; color: #b06000; border-color: #fde293; }
-
-    /* Hint banner */
-    .gt-hint {
-      display: none;
-      padding: 10px 16px;
-      background: #fef7e0;
-      color: #b06000;
-      font-size: 12px;
-      line-height: 1.5;
-      border-top: 1px solid #fde293;
-    }
-    .gt-hint.show { display: block; }
-    .gt-hint strong { font-weight: 700; }
-    .gt-hint code {
-      background: #fff4cc; padding: 1px 5px; border-radius: 4px;
-      font-family: monospace; font-size: 11px;
-    }
-
-    @media (max-width: 520px) {
-      .gt-textarea { font-size: 17px; padding: 14px 50px 14px 14px; min-height: 130px; }
-      .gt-lang-name { font-size: 13px; }
-      .gt-speeds { width: 100%; justify-content: center; }
-      .gt-bottombar { justify-content: center; }
-      .gt-speaker-area { order: 1; }
-      .gt-speeds { order: 2; }
-      .gt-status { font-size: 11px; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>VaaniGen</title>
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="stylesheet" href="style.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="gt-container">
+<div id="gate">
+  <div class="gate-card">
+    <h2 id="gateTitle">Log in</h2>
+    <input id="gateUser" type="text" placeholder="Username" autocomplete="username">
+    <input id="gatePass" type="password" placeholder="Password" autocomplete="current-password">
+    <input id="gateConfirm" type="password" placeholder="Confirm password" style="display:none;">
+    <button class="btn primary" id="gateSubmit" type="button">Log in</button>
+    <p class="gate-switch"><span id="gateSwitchText">New here?</span> <button class="linklike" id="gateToggle" type="button">Create an account</button></p>
+    <p class="hint" id="gateError"></p>
+  </div>
+</div>
+<main class="shell" id="app">
+  <div class="account-bar">
+    <span id="whoami"></span>
+    <button class="linklike" id="logoutBtn" type="button">Log out</button>
+  </div>
+  <h1>Speak</h1>
+  <p class="subtitle">Reads your text aloud in English or Marathi, at the pace you choose.</p>
 
-    <!-- Top bar -->
-    <div class="gt-topbar">
-      <div class="gt-lang" id="langSelector">
-        <div class="gt-lang-left">
-          <span class="gt-lang-label">Text language</span>
-          <span class="gt-lang-name" id="currentLangName">English (India)</span>
-        </div>
-        <span class="gt-arrow">▼</span>
+  <hr class="rule" />
 
-        <div class="gt-dropdown" id="langDropdown">
-          <div class="gt-dropdown-item selected" data-lang="en-IN" data-name="English (India)">
-            🇮🇳 English (India) <small>en-IN</small>
-          </div>
-          <div class="gt-dropdown-item" data-lang="en-GB" data-name="English (UK)">
-            🇬🇧 English (UK) <small>en-GB</small>
-          </div>
-          <div class="gt-dropdown-item" data-lang="en-US" data-name="English (US)">
-            🇺🇸 English (US) <small>en-US</small>
-          </div>
-          <div class="gt-dropdown-item" data-lang="mr-IN" data-name="Marathi">
-            🇮🇳 मराठी (Marathi) <small>mr-IN</small>
-          </div>
-          <div class="gt-dropdown-item" data-lang="hi-IN" data-name="Hindi">
-            🇮🇳 हिन्दी (Hindi) <small>hi-IN</small>
-          </div>
-        </div>
-      </div>
-      <button class="gt-swap" id="swapBtn" title="Swap text">⇄</button>
-    </div>
+  <span class="label">Your text</span>
+  <textarea id="text" lang="en">Hello! This is a sample sentence to test the reader. Replace this with anything you'd like to hear aloud — in English or Marathi.</textarea>
 
-    <!-- Text area -->
-    <div class="gt-textarea-wrap">
-      <textarea
-        class="gt-textarea"
-        id="textInput"
-        maxlength="5000"
-        placeholder="Type or paste text… इथे मजकूर टाइप करा…"
-        spellcheck="false"
-      >Hello! This speaker uses the English (India) voice. नमस्कार! हा स्पीकर English (India) आवाज वापरतो.</textarea>
-      <button class="gt-clear-icon" id="clearIcon" title="Clear">✕</button>
-    </div>
+  <hr class="rule" />
 
-    <!-- Bottom bar -->
-    <div class="gt-bottombar">
-      <div class="gt-speaker-area">
-        <button class="gt-speaker-btn" id="speakBtn" title="Listen">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-          </svg>
-        </button>
-        <button class="gt-stop-btn" id="stopBtn" title="Stop">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="6" width="12" height="12" rx="1"/>
-          </svg>
-        </button>
-      </div>
-
-      <div class="gt-speeds" id="speeds">
-        <button class="gt-speed-chip" data-speed="fast">⚡ Fast</button>
-        <button class="gt-speed-chip active" data-speed="normal">▶ Normal</button>
-        <button class="gt-speed-chip" data-speed="slow">🐢 Slow</button>
-        <button class="gt-speed-chip" data-speed="veryslow">🐌 Very slow</button>
+  <div class="row">
+    <div class="group">
+      <span class="label">Language</span>
+      <div class="seg" id="langSeg">
+        <button data-lang="en" class="active" type="button">English</button>
+        <button data-lang="mr" type="button">मराठी</button>
       </div>
     </div>
-
-    <!-- Hint banner (shows when fallback voice is used) -->
-    <div class="gt-hint" id="voiceHint">
-      ⚠ <strong>English (India) voice not installed on this device.</strong>
-      Using <span id="hintVoiceName">a fallback voice</span> instead.
-      Install it via <code>Settings → Text-to-speech → Install voice data → English (India)</code>.
-    </div>
-
-    <!-- Status bar -->
-    <div class="gt-status">
-      <div class="gt-status-left">
-        <span class="gt-dot" id="statusDot"></span>
-        <span id="statusText">Ready</span>
+    <div class="group">
+      <span class="label">Speed</span>
+      <div class="seg" id="speedSeg">
+        <button data-rate="0.5" type="button">Very slow</button>
+        <button data-rate="0.75" type="button">Slow</button>
+        <button data-rate="1" class="active" type="button">Normal</button>
+        <button data-rate="1.5" type="button">Fast</button>
       </div>
-      <span id="voiceInfo">Voice: —</span>
     </div>
-
   </div>
 
-  <script>
-    (function() {
-      /* ====== DOM ====== */
-      const speakBtn = document.getElementById('speakBtn');
-      const stopBtn = document.getElementById('stopBtn');
-      const textInput = document.getElementById('textInput');
-      const clearIcon = document.getElementById('clearIcon');
-      const speedChips = document.querySelectorAll('.gt-speed-chip');
-      const statusDot = document.getElementById('statusDot');
-      const statusText = document.getElementById('statusText');
-      const voiceInfo = document.getElementById('voiceInfo');
-      const langSelector = document.getElementById('langSelector');
-      const langDropdown = document.getElementById('langDropdown');
-      const langItems = document.querySelectorAll('.gt-dropdown-item');
-      const currentLangName = document.getElementById('currentLangName');
-      const swapBtn = document.getElementById('swapBtn');
-      const voiceHint = document.getElementById('voiceHint');
-      const hintVoiceName = document.getElementById('hintVoiceName');
+  <div class="group voice-group">
+    <span class="label">Voice</span>
+    <select id="voice"></select>
+    <p class="hint" id="voiceHint"></p>
+  </div>
 
-      /* ====== STATE ====== */
-      const synth = window.speechSynthesis;
-      let voices = [];
-      let selectedLang = 'en-IN';       // default: English (India)
-      let currentRate = 'normal';
-      let activeUtterance = null;
-      let isSpeaking = false;
-      let keepAlive = null;
+  <div class="playbar">
+    <button class="btn primary" id="playBtn" type="button">Play</button>
+    <button class="btn secondary" id="stopBtn" type="button" disabled>Stop</button>
+    <span class="status" id="status">Ready</span>
+  </div>
+  <div class="progress"><div class="progress-fill" id="fill"></div></div>
 
-      /* ====== SPEEDS ====== */
-      const RATES = {
-        fast: 1.75,
-        normal: 1.0,
-        slow: 0.65,
-        veryslow: 0.35
-      };
+  <hr class="rule" />
 
-      /* ====== VOICE LOADING ====== */
-      function refreshVoices() {
-        const v = synth.getVoices();
-        if (v && v.length) { voices = v; return true; }
-        return false;
-      }
-      refreshVoices();
-      if (speechSynthesis.onvoiceschanged !== undefined) {
-        speechSynthesis.onvoiceschanged = () => {
-          refreshVoices();
-          updateVoiceBadge();
-        };
-      }
-      let tries = 0;
-      const t = setInterval(() => {
-        if (refreshVoices() || tries++ > 15) {
-          clearInterval(t);
-          updateVoiceBadge();
-        }
-      }, 200);
+  <span class="label">Reading</span>
+  <div class="page">
+    <p id="reading">Press play to begin — each word will light up here as it's spoken.</p>
+  </div>
 
-      /* ====== HELPERS ====== */
-      function hasDevanagari(text) {
-        return /[\u0900-\u097F]/.test(text);
-      }
+  <hr class="rule" />
 
-      /* ====== IMPROVED VOICE PICKER ====== */
-      /* Priority chain per requested language. If the exact language
-         voice is missing, we walk down the list, then fall back to
-         any voice with the same base language, then anything. */
-      function pickVoice() {
-        if (!voices.length) return null;
+  <span class="label">History on this device</span>
+  <div id="historyList"></div>
+  <button class="btn secondary" id="clearHistoryBtn" type="button">Clear history</button>
+</main>
 
-        const code = selectedLang.toLowerCase();       // 'en-in'
-        const base = code.split('-')[0];                // 'en'
-
-        // 1) EXACT match
-        let v = voices.find(x => x.lang.toLowerCase() === code);
-        if (v) return v;
-
-        // 2) Language-specific fallback chains
-        const chains = {
-          'en-in': ['en-in', 'en-gb', 'en-us', 'en-au', 'en-nz', 'en-ca', 'en-ie', 'en-za'],
-          'en-gb': ['en-gb', 'en-in', 'en-us', 'en-au', 'en-nz'],
-          'en-us': ['en-us', 'en-in', 'en-gb', 'en-au'],
-          'mr-in': ['mr-in', 'mr', 'hi-in', 'hi', 'en-in', 'en'],
-          'hi-in': ['hi-in', 'hi', 'mr-in', 'mr', 'en-in', 'en']
-        };
-
-        const chain = chains[code] || [code];
-        for (const langCode of chain) {
-          v = voices.find(x => x.lang.toLowerCase() === langCode);
-          if (v) return v;
-        }
-
-        // 3) Any voice with same base language (e.g., any 'en-*' for en-IN)
-        v = voices.find(x => x.lang.toLowerCase().startsWith(base));
-        if (v) return v;
-
-        // 4) For Indian languages, try any Indian voice
-        if (base === 'mr' || base === 'hi') {
-          v = voices.find(x => x.lang.toLowerCase().includes('in'));
-          if (v) return v;
-        }
-
-        // 5) Absolute fallback
-        return voices[0] || null;
-      }
-
-      /* ====== VOICE BADGE + HINT ====== */
-      function updateVoiceBadge() {
-        const v = pickVoice();
-
-        if (!v) {
-          voiceInfo.innerHTML = '<span class="voice-badge warn">⚠ No voice loaded</span>';
-          voiceHint.classList.remove('show');
-          return;
-        }
-
-        const requested = selectedLang.toLowerCase();
-        const actual = v.lang.toLowerCase().replace('_', '-');
-        const isExact = actual === requested;
-
-        // Flag emoji mapping
-        let flag = '🌐';
-        if (actual.startsWith('en-in')) flag = '🇮🇳';
-        else if (actual.startsWith('en-gb')) flag = '🇬🇧';
-        else if (actual.startsWith('en-us')) flag = '🇺🇸';
-        else if (actual.startsWith('en-au')) flag = '🇦🇺';
-        else if (actual.startsWith('en-nz')) flag = '🇳🇿';
-        else if (actual.startsWith('en-ca')) flag = '🇨🇦';
-        else if (actual.startsWith('en-ie')) flag = '🇮🇪';
-        else if (actual.startsWith('en-za')) flag = '🇿🇦';
-        else if (actual.startsWith('mr') || actual.startsWith('hi')) flag = '🇮🇳';
-
-        voiceInfo.innerHTML = `
-          <span class="voice-badge${isExact ? '' : ' warn'}">
-            <span class="flag">${flag}</span>
-            ${v.name} · ${v.lang.replace('_', '-')} ${isExact ? '✓' : '≈'}
-          </span>`;
-
-        // Show hint banner ONLY when en-IN was requested but not available
-        if (!isExact && requested === 'en-in') {
-          voiceHint.classList.add('show');
-          hintVoiceName.textContent = v.name + ' (' + v.lang.replace('_', '-') + ')';
-        } else {
-          voiceHint.classList.remove('show');
-        }
-      }
-
-      /* ====== UI STATUS ====== */
-      function setStatus(text, speaking) {
-        statusText.textContent = text;
-        if (speaking) {
-          statusDot.classList.add('active');
-          speakBtn.classList.add('speaking');
-          stopBtn.classList.add('visible');
-          speakBtn.style.display = 'none';
-          isSpeaking = true;
-        } else {
-          statusDot.classList.remove('active');
-          speakBtn.classList.remove('speaking');
-          stopBtn.classList.remove('visible');
-          speakBtn.style.display = 'flex';
-          isSpeaking = false;
-        }
-      }
-
-      function updateClearIcon() {
-        clearIcon.classList.toggle('visible', textInput.value.length > 0);
-      }
-      updateClearIcon();
-      textInput.addEventListener('input', updateClearIcon);
-
-      /* ====== STOP ====== */
-      function stopAll(silent) {
-        if (keepAlive) { clearInterval(keepAlive); keepAlive = null; }
-        if (synth.speaking || synth.pending) synth.cancel();
-        if (activeUtterance) {
-          activeUtterance.onstart = null;
-          activeUtterance.onend = null;
-          activeUtterance.onerror = null;
-          activeUtterance = null;
-        }
-        if (!silent) setStatus('Ready', false);
-      }
-
-      /* ====== MAIN SPEAK ====== */
-      function speak() {
-        const text = textInput.value.trim();
-
-        if (!text) {
-          stopAll(true);
-          setStatus('Nothing to speak', false);
-          setTimeout(() => { if (!synth.speaking) setStatus('Ready', false); }, 1400);
-          return;
-        }
-
-        stopAll(true);
-
-        setTimeout(() => {
-          if (!voices.length) refreshVoices();
-
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.rate = RATES[currentRate] || 1.0;
-          utterance.pitch = 1;
-          utterance.volume = 1;
-
-          const voice = pickVoice();
-          if (voice) {
-            utterance.voice = voice;
-            utterance.lang = voice.lang;
-          } else {
-            utterance.lang = selectedLang;
-          }
-
-          utterance.onstart = () => {
-            setStatus('Speaking…', true);
-            if (keepAlive) clearInterval(keepAlive);
-            keepAlive = setInterval(() => {
-              if (!synth.speaking && isSpeaking) {
-                setStatus('Ready', false);
-                if (keepAlive) { clearInterval(keepAlive); keepAlive = null; }
-              }
-            }, 4000);
-          };
-
-          utterance.onend = () => {
-            if (keepAlive) { clearInterval(keepAlive); keepAlive = null; }
-            setStatus('Ready', false);
-            activeUtterance = null;
-          };
-
-          utterance.onerror = (e) => {
-            if (e.error !== 'interrupted' && e.error !== 'canceled') {
-              console.warn('Speech error:', e.error);
-              setStatus('Error', false);
-              setTimeout(() => { if (!synth.speaking) setStatus('Ready', false); }, 1400);
-            }
-            if (keepAlive) { clearInterval(keepAlive); keepAlive = null; }
-            activeUtterance = null;
-          };
-
-          activeUtterance = utterance;
-          synth.speak(utterance);
-        }, 50);
-      }
-
-      /* ====== EVENTS ====== */
-      speakBtn.addEventListener('click', speak);
-
-      stopBtn.addEventListener('click', () => {
-        stopAll(false);
-        setStatus('Stopped', false);
-        setTimeout(() => { if (!synth.speaking) setStatus('Ready', false); }, 900);
-      });
-
-      speedChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-          speedChips.forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
-          currentRate = chip.dataset.speed;
-        });
-      });
-
-      clearIcon.addEventListener('click', () => {
-        stopAll(true);
-        textInput.value = '';
-        updateClearIcon();
-        setStatus('Ready', false);
-        textInput.focus();
-      });
-
-      /* Language dropdown */
-      langSelector.addEventListener('click', (e) => {
-        e.stopPropagation();
-        langDropdown.classList.toggle('show');
-      });
-
-      langItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-          e.stopPropagation();
-          selectedLang = item.dataset.lang;
-          currentLangName.textContent = item.dataset.name;
-
-          langItems.forEach(i => i.classList.remove('selected'));
-          item.classList.add('selected');
-          langDropdown.classList.remove('show');
-
-          updateVoiceBadge();
-        });
-      });
-
-      document.addEventListener('click', () => {
-        langDropdown.classList.remove('show');
-      });
-
-      /* Swap: toggle text between English and Marathi sample */
-      swapBtn.addEventListener('click', () => {
-        const val = textInput.value;
-        if (/[\u0900-\u097F]/.test(val)) {
-          textInput.value = 'Hello! This speaker uses the English (India) voice.';
-          selectedLang = 'en-IN';
-          currentLangName.textContent = 'English (India)';
-          langItems.forEach(i => i.classList.remove('selected'));
-          document.querySelector('.gt-dropdown-item[data-lang="en-IN"]').classList.add('selected');
-        } else {
-          textInput.value = 'नमस्कार! हा स्पीकर मराठी आवाज वापरतो.';
-          selectedLang = 'mr-IN';
-          currentLangName.textContent = 'Marathi';
-          langItems.forEach(i => i.classList.remove('selected'));
-          document.querySelector('.gt-dropdown-item[data-lang="mr-IN"]').classList.add('selected');
-        }
-        updateClearIcon();
-        updateVoiceBadge();
-        setStatus('Ready', false);
-        textInput.focus();
-      });
-
-      /* Keyboard shortcuts */
-      textInput.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-          e.preventDefault();
-          speak();
-        }
-        if (e.key === 'Escape' && isSpeaking) {
-          stopAll(false);
-        }
-      });
-
-      /* Cleanup */
-      window.addEventListener('beforeunload', () => {
-        if (keepAlive) clearInterval(keepAlive);
-        if (synth.speaking) synth.cancel();
-      });
-
-      /* ====== INIT ====== */
-      if (!window.speechSynthesis) {
-        setStatus('Speech not supported', false);
-        speakBtn.disabled = true;
-        speedChips.forEach(c => c.disabled = true);
-        alert('Your browser does not support speech synthesis. Please use Chrome, Edge, or Safari.');
-      } else {
-        setStatus('Ready', false);
-      }
-
-      setTimeout(updateVoiceBadge, 400);
-      setTimeout(updateVoiceBadge, 1200);
-      setTimeout(updateVoiceBadge, 2500);
-    })();
-  </script>
+<script src="script.js"></script>
 </body>
 </html>
